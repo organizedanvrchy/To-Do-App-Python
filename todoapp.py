@@ -2,36 +2,35 @@ print("Welcome to your ToDo App!")
 print("Follow the prompt below to begin.")
 
 while True:
-    user_action = input("\nType add, show, edit, complete, or exit: ")
+    user_action = input("\nType Add, Show, Edit, Complete, or Exit: ")
     user_action = user_action.strip()
 
-    match user_action:
-        case 'add':
-            print("\nAdd a task to your list!")
-            action = input("Enter your task: ") + "\n"
-            action = action.title()
+    if user_action.startswith('add'):
+        action = user_action[4:].title()  
 
-            with open('todo.txt', 'r') as file:
-                actions = file.readlines()
+        with open('todo.txt', 'r') as file:
+            actions = file.readlines()
 
-            actions.append(action)
+        actions.append(action + '\n')
 
-            with open('todo.txt', 'w') as file:
-                file.writelines(actions)
+        with open('todo.txt', 'w') as file:
+            file.writelines(actions)
 
-        case 'show':
-            print("\nHere's your current list of tasks:\n")
+    elif user_action.startswith('show'):
+        with open('todo.txt', 'r') as file:
+            actions = file.readlines()
 
-            with open('todo.txt', 'r') as file:
-                actions = file.readlines()
+        if len(actions) == 0:
+            print("\nYou currently have no tasks in your list!")
+        else:
+            print("\nHere's a list of your tasks:\n")
 
-            #new_actions = [item.strip('\n') for item in actions]
+        for i, value in enumerate(actions, 1):
+            print("{}. {}".format(i, value.strip('\n')))
 
-            for i, value in enumerate(actions, 1):
-                print("{}. {}".format(i, value.strip('\n')))
-
-        case 'edit':
-            number = int(input("\nEnter the number of the task you would like to edit: "))
+    elif user_action.startswith('edit'):
+        try:
+            number = int(user_action[5:])
             number -= 1
 
             with open('todo.txt', 'r') as file:
@@ -42,24 +41,39 @@ while True:
 
             with open('todo.txt', 'w') as file:
                 file.writelines(actions)
+        except ValueError:
+            print("\nCommand is not valid. Please type 'edit' followed by the number of the task in your list.")
+            continue
+        except IndexError:
+            print("\nCommand is not valid. You do not have that many tasks on your list.") 
+            print("Please type 'edit' followed by the number of the task in your list.")
+            continue
 
-        case 'complete':
-            comp = int(input("\nPlease enter the number of the task you would like to mark as complete: "))
+    elif user_action.startswith('complete'):
+        try:
+            number = int(user_action[9:])
             
             with open('todo.txt', 'r') as file:
                 actions = file.readlines()
 
-            tmp = comp - 1
+            tmp = number - 1
             action_remove = actions[tmp]
             actions.pop(tmp)
 
             with open('todo.txt', 'w') as file:
                 file.writelines(actions)
+        except ValueError:
+            print("\nCommand is not valid. Please type 'complete' followed by the number of the task in your list.")
+            continue
+        except IndexError:
+            print("\nCommand is not valid. You do not have that many tasks on your list.") 
+            print("Please type 'complete' followed by the number of the task in your list.")
+            continue
 
-        case 'exit':
-            break
+    elif user_action.startswith('exit'):
+        break
 
-        case _:
-            print("\nThis command is unknown! Please try again\n")
+    else:
+        print("\nThis command is invalid! Please enter a command from the list.\n")
 
 print("\nGoodbye!")
