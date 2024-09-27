@@ -1,7 +1,10 @@
-print("Welcome to your ToDo App!")
-print("Follow the prompt below to begin.")
-
 import functions
+import time
+
+print("Welcome to your ToDo App!")
+currTime = time.strftime("%b %d, %Y | %H:%M:%S")
+print(currTime)
+print("Follow the prompt below to begin.")
 
 while True:
     userAction = input("\nType Add, Show, Edit, Complete, or Exit: ")
